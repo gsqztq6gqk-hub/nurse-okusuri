@@ -20,7 +20,12 @@ export default async function handler(req, res) {
     },
     body: JSON.stringify({
       replyToken: event.replyToken,
-      messages: [{ type: "text", text: "つながりました！" }],
+      messages: [
+        {
+          type: "text",
+          text: "つながりました！",
+        },
+      ],
     }),
   });
 
