@@ -8,11 +8,14 @@ export default async function handler(req, res) {
   const body = raw ? JSON.parse(raw) : {};
   const event = body.events?.[0];
 
+  console.log("EVENT:", JSON.stringify(event));
+
   if (!event || !event.replyToken) {
+    console.log("NO EVENT OR REPLY TOKEN");
     return res.status(200).send("NO_EVENT");
   }
 
-  await fetch("https://api.line.me/v2/bot/message/reply", {
+  const response = await fetch("https://api.line.me/v2/bot/message/reply", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -20,14 +23,13 @@ export default async function handler(req, res) {
     },
     body: JSON.stringify({
       replyToken: event.replyToken,
-      messages: [
-        {
-          type: "text",
-          text: "つながりました！",
-        },
-      ],
+      messages: [{ type: "text", text: "つながりました！" }],
     }),
   });
+
+  const text = await response.text();
+  console.log("LINE RESPONSE STATUS:", response.status);
+  console.log("LINE RESPONSE BODY:", text);
 
   return res.status(200).send("REPLIED");
 }
